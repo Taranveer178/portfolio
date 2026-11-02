@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.landing-dot-field {
+  background-image: radial-gradient(#BDD2C1 1px, transparent 1px);
+  background-size: 24px 24px;
+}
