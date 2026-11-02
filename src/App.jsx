@@ -255,10 +255,9 @@ const portfolioProjects = [
       { label: 'Search Mechanism', val: 'FAISS Vector Similarity' },
       { label: 'Language Model', val: 'Google Generative AI' },
     ],
+    serverlessBot: true,
     link: 'https://taranveer.streamlit.app/',
-    linkText: 'Try Streamlit Version Live',
-    secondaryLink: 'https://github.com/Taranveer178',
-    secondaryText: 'GitHub Source',
+    linkText: 'Open Streamlit Bot',
   },
   {
     id: 'lms-portal',
@@ -307,24 +306,6 @@ const portfolioProjects = [
       { label: 'Platforms', val: 'Shopify, WordPress, Wix, Squarespace' },
       { label: 'Theme Architecture', val: 'Custom Liquid & PHP hooks' },
     ],
-    link: 'https://github.com/Taranveer178',
-    linkText: 'Explore Details',
-  },
-  {
-    id: 'devops-infra',
-    category: 'backend',
-    prominent: false,
-    title: 'Web Hosting, DNS & Deployment Pipeline',
-    badge: 'HOSTING & LINUX OPS',
-    tech: 'cPanel, Cloudflare WAF, DNS Management, SSL Provisioning, phpMyAdmin',
-    desc: 'Hands-on setup and management of production web environments, including DNS zone records, Cloudflare caching, automated SSL encryption, database migrations, and zero-downtime website deployments.',
-    tags: ['cPanel', 'Cloudflare', 'DNS Routing', 'SSL Certificates', 'MySQL'],
-    metrics: [
-      { label: 'Security & Speed', val: 'Cloudflare CDN & SSL' },
-      { label: 'Management', val: 'cPanel & phpMyAdmin' },
-    ],
-    link: 'https://github.com/Taranveer178',
-    linkText: 'Hosting Practices',
   },
 ];
 
@@ -649,7 +630,7 @@ export default function App() {
       {/* STICKY LIQUID GLASS NAVBAR (ONLINE CV BRANDING)                     */}
       {/* =================================================================== */}
       <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
-        <nav className="mx-auto flex max-w-[1340px] items-center justify-between rounded-full border border-white/90 bg-white/85 px-4 py-2.5 shadow-lg shadow-blue-900/5 backdrop-blur-2xl sm:px-6">
+        <nav className="mx-auto flex max-w-[1200px] items-center justify-between rounded-full border border-white/90 bg-white/85 px-4 py-2.5 shadow-lg shadow-blue-900/5 backdrop-blur-2xl sm:px-6">
           <a
             href="#top"
             onClick={(e) => {
@@ -736,7 +717,7 @@ export default function App() {
         </nav>
 
         {mobileMenuOpen && (
-          <div className="mx-auto mt-2 max-w-[1340px] rounded-3xl border border-white/90 bg-white/95 p-4 shadow-2xl backdrop-blur-2xl lg:hidden">
+          <div className="mx-auto mt-2 max-w-[1200px] rounded-3xl border border-white/90 bg-white/95 p-4 shadow-2xl backdrop-blur-2xl lg:hidden">
             <div className="grid grid-cols-2 gap-2">
               {[
                 { label: 'Introduction', id: 'top' },
@@ -785,7 +766,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 1: HERO (ABOUT TARANVEER'S INTRO - DIGITAL CV FRAMING)      */}
       {/* =================================================================== */}
-      <section id="top" className="relative z-10 mx-auto max-w-[1340px] px-4 pb-16 pt-8 sm:px-6 md:pb-20 md:pt-10">
+      <section id="top" className="relative z-10 mx-auto max-w-[1200px] px-4 pb-16 pt-8 sm:px-6 md:pb-20 md:pt-10">
         <div aria-hidden="true" className="landing-dot-field pointer-events-none absolute inset-0 -z-10 opacity-70" />
 
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
@@ -981,7 +962,7 @@ export default function App() {
         id="mobile-showcase"
         className="relative z-10 w-full overflow-hidden bg-white py-16"
       >
-        <div className="mx-auto max-w-[1360px] px-4 sm:px-6">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
           <RevealOnScroll className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end">
             <div className="text-center sm:text-left">
               <span className="rounded-full border border-[#BDD2C1] bg-[#EEF4EF]/80 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-[#3E7754]">
@@ -1157,7 +1138,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 3: DESKTOP COMMAND CENTER                                  */}
       {/* =================================================================== */}
-      <section id="desktop-preview" className="relative z-10 mx-auto max-w-[1340px] px-4 py-16 sm:px-6">
+      <section id="desktop-preview" className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
         <LandingSectionGraphic />
         <RevealOnScroll className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:flex-nowrap lg:items-end lg:gap-8">
           <div>
@@ -1204,7 +1185,7 @@ export default function App() {
       {/* =================================================================== */}
       <section
         id="projects"
-        className="relative z-10 mx-auto max-w-[1340px] px-4 py-16 before:absolute before:inset-y-0 before:left-1/2 before:-z-10 before:w-screen before:-translate-x-1/2 before:bg-white before:content-[''] sm:px-6"
+        className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 before:absolute before:inset-y-0 before:left-1/2 before:-z-10 before:w-screen before:-translate-x-1/2 before:bg-white before:content-[''] sm:px-6"
       >
         <RevealOnScroll className="text-center">
           <span className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
@@ -1254,6 +1235,29 @@ export default function App() {
               </article>
             </RevealOnScroll>
           ))}
+          <RevealOnScroll delay={portfolioProjects.length * 50}>
+            <article className="flex h-full min-h-[250px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 p-6 text-white shadow-lg shadow-blue-900/15">
+              <div>
+                <span className="inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-blue-50">
+                  Have an idea?
+                </span>
+                <h3 className="font-serif mt-4 text-xl font-bold leading-snug">
+                  Let’s build something useful.
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-blue-100">
+                  From web apps and social platforms to AI tools, I enjoy turning thoughtful ideas into real projects.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => scrollToSection('contact')}
+                className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-blue-700 transition hover:bg-blue-50"
+              >
+                Discuss a project
+                <ArrowRight size={14} />
+              </button>
+            </article>
+          </RevealOnScroll>
         </div>
       </section>
 
@@ -1265,7 +1269,7 @@ export default function App() {
         className="relative z-10 border-y border-blue-100 bg-[#EEF4FB] px-4 py-16 sm:px-6"
       >
         <LandingSectionGraphic />
-        <div className="mx-auto max-w-[1120px]">
+        <div className="mx-auto max-w-[1200px]">
           <RevealOnScroll className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <span className="rounded-full border border-blue-200 bg-white px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
@@ -1289,11 +1293,11 @@ export default function App() {
           </RevealOnScroll>
 
           {/* 2-Column Resume Format */}
-          <div className="mt-10 grid gap-8 lg:grid-cols-12">
+          <div className="resume-grid mt-10">
             {/* Left: Work Experience & Education */}
-            <div className="space-y-6 lg:col-span-7">
+            <div className="resume-column resume-column-left">
               {/* Professional Experience Box */}
-              <div className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
+              <div className="resume-card resume-experience rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
                 <div className="flex items-center gap-2 text-blue-700 pb-3 border-b border-slate-100">
                   <Briefcase size={18} />
                   <h3 className="font-serif text-base font-bold text-slate-900">Work Experience</h3>
@@ -1319,27 +1323,11 @@ export default function App() {
                     </ul>
                   </div>
 
-                  {/* Independent Technical Projects */}
-                  <div className="relative pl-5 border-l-2 border-slate-300">
-                    <span className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-slate-400 ring-4 ring-slate-100" />
-                    <div className="flex flex-wrap items-center justify-between gap-1">
-                      <h4 className="text-sm font-bold text-slate-900">Creator &amp; Full-Stack Architect</h4>
-                      <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">
-                        2025 — 2026
-                      </span>
-                    </div>
-                    <p className="text-xs font-medium text-slate-500">ShareBills (Independent SaaS Application)</p>
-                    <ul className="mt-2.5 space-y-1.5 text-xs text-slate-600 list-disc list-inside">
-                      <li>Architected and launched a full-stack shared financial platform for flatmates and travel groups.</li>
-                      <li>Engineered greedy graph debt simplification reducing circular transfers by 67%.</li>
-                      <li>Implemented Google Pay / UPI deep-links, in-chat bill dispute cards, and monthly rent ledgers.</li>
-                    </ul>
-                  </div>
                 </div>
               </div>
 
               {/* Education Box */}
-              <div className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
+              <div className="resume-card resume-education rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
                 <div className="flex items-center gap-2 text-blue-700 pb-3 border-b border-slate-100">
                   <GraduationCap size={18} />
                   <h3 className="font-serif text-base font-bold text-slate-900">Education</h3>
@@ -1360,9 +1348,9 @@ export default function App() {
             </div>
 
             {/* Right: Technical Summary & Contact Details */}
-            <div className="space-y-6 lg:col-span-5">
+            <div className="resume-column resume-column-right">
               {/* Technical Skills Summary */}
-              <div className="rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
+              <div className="resume-card resume-inventory rounded-3xl border border-white/90 bg-white/95 p-6 shadow-sm">
                 <h3 className="font-serif text-base font-bold text-slate-900">Technical Inventory</h3>
                 <p className="mt-1 text-xs text-slate-500">Core technologies used on daily production work.</p>
 
@@ -1414,35 +1402,88 @@ export default function App() {
               </div>
 
               {/* Verified Contact Card */}
-              <div className="rounded-3xl border border-blue-200 bg-blue-50/70 p-6 shadow-sm">
-                <h3 className="font-serif text-base font-bold text-slate-900">Direct Coordinates</h3>
-                <p className="mt-1 text-xs text-slate-600">Professional inquiries and developer networking.</p>
+              <div className="resume-card resume-coordinates overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-sm">
+                <div className="bg-gradient-to-r from-blue-700 to-indigo-700 px-5 py-4 text-white">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">
+                        Get in touch
+                      </span>
+                      <h3 className="font-serif mt-1 text-lg font-bold">Direct Coordinates</h3>
+                    </div>
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-white/90">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      Available
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-blue-100">
+                    Professional inquiries and developer networking.
+                  </p>
+                </div>
 
-                <div className="mt-4 space-y-2 text-xs text-slate-700">
-                  <div className="flex items-center gap-2">
-                    <Mail size={14} className="text-blue-600" />
-                    <span>staranveer178@gmail.com</span>
+                <div className="grid gap-2.5 p-4 sm:grid-cols-2">
+                  <a
+                    href="mailto:staranveer178@gmail.com"
+                    className="group flex min-w-0 items-center gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/70 p-3 transition hover:border-blue-200 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                      <Mail size={15} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Email</span>
+                      <span className="mt-0.5 block truncate text-xs font-semibold text-slate-800">staranveer178@gmail.com</span>
+                    </span>
+                  </a>
+                  <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <a
+                      href="tel:+916283945840"
+                      className="flex min-w-0 flex-1 items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <Phone size={15} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Phone</span>
+                        <span className="mt-0.5 block truncate text-xs font-semibold text-slate-800">+91 62839 45840</span>
+                      </span>
+                    </a>
+                    <a
+                      href="https://wa.me/916283945840"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Message on WhatsApp"
+                      title="Message on WhatsApp"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 transition hover:bg-emerald-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                    >
+                      <MessageSquare size={14} />
+                    </a>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Phone size={14} className="text-blue-600" />
-                    <span>+91 62839 45840</span>
+                  <div className="flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                      <MapPin size={15} />
+                    </span>
+                    <span>
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Location</span>
+                      <span className="mt-0.5 block text-xs font-semibold text-slate-800">Mohali / Punjab, India</span>
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin size={14} className="text-blue-600" />
-                    <span>Mohali / Punjab, India</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Building size={14} className="text-blue-600" />
-                    <span>Binary Data Pvt Ltd</span>
+                  <div className="flex items-center gap-2.5 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                      <Building size={15} />
+                    </span>
+                    <span>
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Company</span>
+                      <span className="mt-0.5 block text-xs font-semibold text-slate-800">Binary Data Pvt Ltd</span>
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-blue-200/60 flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 px-5 py-3">
                   <a
                     href="https://github.com/Taranveer178"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 transition hover:text-blue-700"
                   >
                     <CodeXml size={13} />
                     <span>GitHub</span>
@@ -1451,7 +1492,7 @@ export default function App() {
                     href="https://www.linkedin.com/in/taranveer-singh-2445871b6/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 transition hover:text-blue-700"
                   >
                     <LinkIcon size={13} />
                     <span>LinkedIn</span>
@@ -1460,7 +1501,7 @@ export default function App() {
                     href="https://sharebills.in/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 transition hover:text-blue-700"
                   >
                     <Globe size={13} />
                     <span>ShareBills</span>
@@ -1475,7 +1516,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 6: SKILLS (GRID VIEW)                                       */}
       {/* =================================================================== */}
-      <section id="skills" className="relative z-10 mx-auto max-w-[1340px] px-4 py-16 sm:px-6">
+      <section id="skills" className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
         <RevealOnScroll className="text-center">
           <span className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
             Skills &amp; Tools
@@ -1520,7 +1561,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 7: RESUME DOWNLOAD CALLOUT                                  */}
       {/* =================================================================== */}
-      <section id="download-section" className="relative z-10 mx-auto max-w-[1340px] px-4 py-10 sm:px-6">
+      <section id="download-section" className="relative z-10 mx-auto max-w-[1200px] px-4 py-10 sm:px-6">
         <RevealOnScroll className="relative z-10 rounded-[32px] border border-blue-800 bg-[#0F1E36] p-6 text-white shadow-2xl sm:p-10">
           <div className="flex flex-col items-center justify-between gap-6 lg:flex-row">
             <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
@@ -1568,7 +1609,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 8: FAQ                                                      */}
       {/* =================================================================== */}
-      <section id="faq" className="relative z-10 mx-auto max-w-[920px] px-4 py-16 sm:px-6">
+      <section id="faq" className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
         <RevealOnScroll className="text-center">
           <span className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
             Questions
@@ -1578,7 +1619,7 @@ export default function App() {
           </h2>
         </RevealOnScroll>
 
-        <div className="mt-8 space-y-3">
+        <div className="mx-auto mt-8 max-w-[920px] space-y-3">
           {portfolioFaqs.map((item, idx) => {
             const isOpen = openFaq === idx;
             return (
@@ -1612,7 +1653,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* SECTION 9: CONNECT & DIRECT COORDINATES                             */}
       {/* =================================================================== */}
-      <section id="contact" className="relative z-10 mx-auto max-w-[1120px] px-4 py-16 sm:px-6">
+      <section id="contact" className="relative z-10 mx-auto max-w-[1200px] px-4 py-16 sm:px-6">
         <RevealOnScroll className="text-center">
           <span className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-700">
             Connect
@@ -1628,61 +1669,83 @@ export default function App() {
         <div className="mt-10 grid gap-8 lg:grid-cols-12">
           {/* Coordinates */}
           <div className="space-y-4 lg:col-span-5">
-            <div className="rounded-3xl border border-white bg-white/95 p-6 shadow-sm">
-              <h3 className="font-serif text-base font-bold text-slate-900">Direct Contact</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                Responses are typically provided within 1 business day.
-              </p>
-
-              <div className="mt-5 space-y-3">
-                <a
-                  href="mailto:staranveer178@gmail.com"
-                  className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 transition hover:bg-blue-50"
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-xs">
-                    <Mail size={16} />
-                  </span>
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400">Email Address</span>
-                    <p className="text-xs font-bold text-slate-900">staranveer178@gmail.com</p>
-                  </div>
-                </a>
-
-                <a
-                  href="tel:+916283945840"
-                  className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 transition hover:bg-blue-50"
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-xs">
-                    <Phone size={16} />
-                  </span>
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400">Phone Contact</span>
-                    <p className="text-xs font-bold text-slate-900">+91 62839 45840</p>
-                  </div>
-                </a>
-
-                <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-xs">
-                    <MapPin size={16} />
-                  </span>
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400">Location Base</span>
-                    <p className="text-xs font-bold text-slate-900">Mohali / Punjab, India</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-xs">
-                    <Building size={16} />
-                  </span>
-                  <div>
-                    <span className="text-[10px] font-bold text-slate-400">Current Company</span>
-                    <p className="text-xs font-bold text-slate-900">Binary Data Pvt Ltd</p>
-                  </div>
-                </div>
+            <div className="h-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-5 py-5 sm:px-6">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-white/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Available to connect
+                </span>
+                <h3 className="font-serif mt-3 text-xl font-bold tracking-tight text-slate-900">
+                  Direct Coordinates
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                  Professional inquiries and developer networking.
+                </p>
               </div>
 
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-around">
+              <div className="space-y-2.5 p-4 sm:p-5">
+                <a
+                  href="mailto:staranveer178@gmail.com"
+                  className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 transition hover:border-blue-200 hover:bg-blue-50/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-100">
+                    <Mail size={16} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Email</span>
+                    <span className="mt-0.5 block truncate text-xs font-semibold text-slate-800">staranveer178@gmail.com</span>
+                  </div>
+                  <ArrowRight size={15} className="shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-blue-600" />
+                </a>
+
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-3 transition hover:border-emerald-200 hover:bg-emerald-50/60">
+                  <a
+                    href="tel:+916283945840"
+                    className="group flex min-w-0 flex-1 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-100">
+                      <Phone size={16} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Phone</span>
+                      <span className="mt-0.5 block text-xs font-semibold text-slate-800">+91 62839 45840</span>
+                    </span>
+                  </a>
+                  <a
+                    href="https://wa.me/916283945840"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Message Taranveer on WhatsApp"
+                    title="Message on WhatsApp"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition hover:bg-emerald-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  >
+                    <MessageSquare size={16} />
+                  </a>
+                </div>
+
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700 shadow-xs">
+                      <MapPin size={16} />
+                    </span>
+                    <div className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Location</span>
+                      <p className="mt-0.5 text-xs font-semibold leading-snug text-slate-800">Mohali / Punjab, India</p>
+                    </div>
+                  </div>
+
+                  <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700 shadow-xs">
+                      <Building size={16} />
+                    </span>
+                    <div className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400">Company</span>
+                      <p className="mt-0.5 text-xs font-semibold leading-snug text-slate-800">Binary Data Pvt Ltd</p>
+                    </div>
+                  </div>
+                </div>
+
+              <div className="flex items-center justify-around border-t border-slate-100 pt-4">
                 <a
                   href="https://github.com/Taranveer178"
                   target="_blank"
@@ -1710,6 +1773,7 @@ export default function App() {
                   <Globe size={15} />
                   <span>ShareBills</span>
                 </a>
+              </div>
               </div>
             </div>
           </div>
@@ -1801,7 +1865,7 @@ export default function App() {
       {/* SECTION 10: FOOTER (NAVY BLUE)                                      */}
       {/* =================================================================== */}
       <footer className="relative z-10 border-t border-blue-900 bg-[#0A1322] text-white">
-        <div className="mx-auto max-w-[1340px] px-4 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 sm:py-12">
           <div className="flex flex-col gap-6 border-b border-white/10 pb-7 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <img
@@ -2021,15 +2085,30 @@ export default function App() {
                 </h2>
               </div>
               <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:max-w-[55%] sm:justify-end">
-                <a
-                  href={previewModal.project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
-                >
-                  {previewModal.project.linkText || 'View Project'}
-                  <ExternalLink size={13} />
-                </a>
+                {previewModal.project.serverlessBot && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreviewModal(null);
+                      setChatOpen(true);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                  >
+                    <Sparkles size={13} />
+                    Open Serverless Bot
+                  </button>
+                )}
+                {previewModal.project.link && (
+                  <a
+                    href={previewModal.project.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+                  >
+                    {previewModal.project.linkText || 'View Project'}
+                    <ExternalLink size={13} />
+                  </a>
+                )}
                 {previewModal.project.secondaryLink && (
                   <a
                     href={previewModal.project.secondaryLink}

@@ -7,6 +7,54 @@
   background-size: 24px 24px;
 }
 
+.resume-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.resume-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .resume-grid {
+    grid-template-areas:
+      "experience inventory"
+      "education coordinates";
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .resume-column {
+    display: contents;
+  }
+
+  .resume-experience {
+    grid-area: experience;
+  }
+
+  .resume-inventory {
+    grid-area: inventory;
+  }
+
+  .resume-education {
+    grid-area: education;
+  }
+
+  .resume-coordinates {
+    grid-area: coordinates;
+  }
+
+  .resume-card {
+    height: 100%;
+  }
+}
+
 .chat-messages-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
