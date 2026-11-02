@@ -1120,7 +1120,7 @@ export default function App() {
                   <ExternalLink size={12} />
                 </a>
                 <a
-                  href="https://sharebills.in/Sharebills.apk"
+                  href="https://sharebills.in/sharebills.apk"
                   className="inline-flex items-center gap-1.5 rounded-full border border-[#BDD2C1] bg-white px-4 py-1.5 text-xs font-bold text-[#356447] shadow-sm transition hover:bg-[#EEF4EF]"
                 >
                   <Download size={13} />
