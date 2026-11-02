@@ -28,3 +28,28 @@
 .chat-messages-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8;
 }
+
+.project-modal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.project-modal-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-modal-scrollbar::-webkit-scrollbar-track {
+  margin-block: 12px;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+}
+
+.project-modal-scrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid #f1f5f9;
+  border-radius: 9999px;
+  background-color: #94a3b8;
+}
+
+.project-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}

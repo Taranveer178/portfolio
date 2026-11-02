@@ -236,6 +236,8 @@ const portfolioProjects = [
     ],
     link: 'https://sharebills.in/',
     linkText: 'Visit Live Website (sharebills.in)',
+    downloadLink: 'https://sharebills.in/Sharebills.apk',
+    downloadText: 'Download Android APK',
     secondaryLink: 'https://github.com/taranveer178',
     secondaryText: 'GitHub Profile',
   },
@@ -276,20 +278,21 @@ const portfolioProjects = [
     linkText: 'View Repository on GitHub',
   },
   {
-    id: 'roomsplit-utility',
+    id: 'vibely',
     category: 'frontend',
     prominent: false,
-    title: 'RoomSplit — Offline-First Expense Helper',
-    badge: 'REACT & LOCAL STORAGE',
-    tech: 'React.js, Local Storage API, UPI Links, PWA Service Workers',
-    desc: 'A lightweight household expense tracker for roommates. Operates smoothly even without an internet connection using local browser storage, and generates pre-filled Google Pay / UPI links for direct settlements.',
-    tags: ['React JS', 'Local Storage', 'Offline First', 'UPI Links', 'PWA'],
+    title: 'Vibely — Social Media Platform',
+    badge: 'SOCIAL MEDIA APP',
+    tech: 'Social networking, content sharing, messaging, and chat',
+    desc: 'Vibely is a social media app for sharing posts and stories, following updates, messaging people, and chatting in one place.',
+    tags: ['Social Media', 'Posts', 'Stories', 'Updates', 'Messaging', 'Chat'],
     metrics: [
-      { label: 'Offline Mode', val: '100% Local Storage Fallback' },
-      { label: 'Payment Integration', val: 'Instant UPI Links' },
+      { label: 'Share', val: 'Posts and stories' },
+      { label: 'Connect', val: 'Messaging and chat' },
+      { label: 'Stay Updated', val: 'Social feed and updates' },
     ],
-    link: 'https://github.com/Taranveer178',
-    linkText: 'View on GitHub',
+    link: 'https://vibely.taranveer.in/',
+    linkText: 'Open Vibely',
   },
   {
     id: 'cms-commerce',
@@ -1106,7 +1109,7 @@ export default function App() {
               <p className="mt-1 text-xs text-slate-600 sm:text-sm">
                 {dashboardSlides[activeCarouselIndex].desc}
               </p>
-              <div className="mt-3">
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
                 <a
                   href="https://sharebills.in/"
                   target="_blank"
@@ -1115,6 +1118,13 @@ export default function App() {
                 >
                   <span>Open Live ShareBills App</span>
                   <ExternalLink size={12} />
+                </a>
+                <a
+                  href="https://sharebills.in/Sharebills.apk"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#BDD2C1] bg-white px-4 py-1.5 text-xs font-bold text-[#356447] shadow-sm transition hover:bg-[#EEF4EF]"
+                >
+                  <Download size={13} />
+                  <span>Download Android APK</span>
                 </a>
               </div>
             </div>
@@ -1999,10 +2009,10 @@ export default function App() {
             aria-modal="true"
             aria-labelledby="project-modal-title"
             onClick={(event) => event.stopPropagation()}
-            className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/80 bg-white p-5 text-slate-900 shadow-2xl sm:p-7"
+            className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/80 bg-white text-slate-900 shadow-2xl"
           >
-            <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
-              <div>
+            <div className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b border-slate-100 bg-white p-5 sm:p-6">
+              <div className="min-w-0 flex-1">
                 <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">
                   {previewModal.project.badge}
                 </span>
@@ -2010,17 +2020,48 @@ export default function App() {
                   {previewModal.project.title}
                 </h2>
               </div>
-              <button
-                type="button"
-                onClick={() => setPreviewModal(null)}
-                aria-label="Close project details"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
-              >
-                <X size={16} />
-              </button>
+              <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:max-w-[55%] sm:justify-end">
+                <a
+                  href={previewModal.project.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+                >
+                  {previewModal.project.linkText || 'View Project'}
+                  <ExternalLink size={13} />
+                </a>
+                {previewModal.project.secondaryLink && (
+                  <a
+                    href={previewModal.project.secondaryLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+                  >
+                    {previewModal.project.secondaryText || 'View Project'}
+                    <ExternalLink size={13} />
+                  </a>
+                )}
+                {previewModal.project.downloadLink && (
+                  <a
+                    href={previewModal.project.downloadLink}
+                    className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100"
+                  >
+                    <Download size={13} />
+                    {previewModal.project.downloadText}
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPreviewModal(null)}
+                  aria-label="Close project details"
+                  className="ml-auto flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 sm:ml-0"
+                >
+                  <X size={16} />
+                </button>
+              </div>
             </div>
 
-            <div className="mt-5 space-y-5">
+            <div className="project-modal-scrollbar min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:p-6">
               <p className="text-sm leading-relaxed text-slate-600">{previewModal.project.desc}</p>
 
               <div>
@@ -2047,28 +2088,6 @@ export default function App() {
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
-                <a
-                  href={previewModal.project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-700"
-                >
-                  {previewModal.project.linkText}
-                  <ExternalLink size={13} />
-                </a>
-                {previewModal.project.secondaryLink && (
-                  <a
-                    href={previewModal.project.secondaryLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
-                  >
-                    {previewModal.project.secondaryText}
-                    <ExternalLink size={13} />
-                  </a>
-                )}
-              </div>
             </div>
           </div>
         </div>
