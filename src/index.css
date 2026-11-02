@@ -6,3 +6,25 @@
   background-image: radial-gradient(#BDD2C1 1px, transparent 1px);
   background-size: 24px 24px;
 }
+
+.chat-messages-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.chat-messages-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-messages-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: #cbd5e1;
+}
+
+.chat-messages-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}

@@ -45,10 +45,10 @@ import {
   MapPin,
   Check,
   Copy,
+  Trash2,
   Eye,
   FileText,
   Send,
-  RotateCcw,
   Bot,
   User,
   Calendar,
@@ -146,7 +146,7 @@ const LandingSectionGraphic = () => (
 const dashboardSlides = [
   {
     id: 'overview',
-    imageKey: 'mobile_1',
+    imageKey: '/assets/mobile-dashboard-1.webp',
     tag: 'Overview & Spaces',
     title: 'Financial Command Center',
     shortTitle: 'Overview',
@@ -156,7 +156,7 @@ const dashboardSlides = [
   },
   {
     id: 'spaces',
-    imageKey: 'mobile_2',
+    imageKey: '/assets/mobile-dashboard-2.webp',
     tag: 'Collaborative Spaces',
     title: 'Organized Flat & Group Spaces',
     shortTitle: 'Spaces',
@@ -166,7 +166,7 @@ const dashboardSlides = [
   },
   {
     id: 'transactions',
-    imageKey: 'mobile_3',
+    imageKey: '/assets/mobile-dashboard-3.webp',
     tag: 'Shared Transactions',
     title: 'Real-Time Audit Ledger',
     shortTitle: 'Transactions',
@@ -176,7 +176,7 @@ const dashboardSlides = [
   },
   {
     id: 'chat',
-    imageKey: 'mobile_4',
+    imageKey: '/assets/mobile-dashboard-4.webp',
     tag: 'In-Room Chat',
     title: 'Integrated Discussion Stream',
     shortTitle: 'Room Chat',
@@ -186,7 +186,7 @@ const dashboardSlides = [
   },
   {
     id: 'reactions',
-    imageKey: 'mobile_5',
+    imageKey: '/assets/mobile-dashboard-5.webp',
     tag: 'Disputes & Reactions',
     title: 'In-Chat Dispute Flagging',
     shortTitle: 'Disputes',
@@ -196,7 +196,7 @@ const dashboardSlides = [
   },
   {
     id: 'quick-expense',
-    imageKey: 'mobile_6',
+    imageKey: '/assets/mobile-dashboard-6.webp',
     tag: 'Quick Split',
     title: 'Lightning-Fast Expense Logging',
     shortTitle: 'Quick Expense',
@@ -206,7 +206,7 @@ const dashboardSlides = [
   },
   {
     id: 'settlements',
-    imageKey: 'mobile_7',
+    imageKey: '/assets/mobile-dashboard-7.webp',
     tag: 'UPI Settlements',
     title: 'Smart Settlement Engine',
     shortTitle: 'UPI Settlements',
@@ -433,12 +433,9 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState(0);
   const [previewModal, setPreviewModal] = useState(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
-
-  // Interactive contact form
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactMessage, setContactMessage] = useState('');
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactError, setContactError] = useState('');
 
   // Chatbot state
   const [chatOpen, setChatOpen] = useState(false);
@@ -539,15 +536,30 @@ export default function App() {
     setTimeout(() => setCopiedEmail(false), 2500);
   };
 
-  const handleContactSubmit = (e) => {
-    e.preventDefault();
-    if (!contactName || !contactEmail || !contactMessage) return;
-    setContactSubmitted(true);
-    setTimeout(() => {
-      setContactName('');
-      setContactEmail('');
-      setContactMessage('');
-    }, 500);
+  const handleContactSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    setContactSubmitting(true);
+    setContactError('');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        setContactError('Your message could not be sent. Please try again.');
+        return;
+      }
+
+      setContactSubmitted(true);
+    } catch {
+      setContactError('Unable to connect. Check your internet connection and try again.');
+    } finally {
+      setContactSubmitting(false);
+    }
   };
 
   // Chatbot send handler
@@ -1068,7 +1080,7 @@ export default function App() {
                         />
                         <div className="relative h-[568px] overflow-hidden bg-white sm:h-[634px]">
                           <img
-                            src={IMAGES[slide.imageKey]}
+                            src={slide.imageKey}
                             alt={`${slide.tag} mobile dashboard screen`}
                             className="block h-full w-full object-cover object-top"
                           />
@@ -1162,7 +1174,7 @@ export default function App() {
                 <span className="h-1.5 w-1.5 rounded-full border border-[#30343a] bg-[#17191c]" />
               </div>
               <img
-                src={IMAGES.dashboard}
+                src="/assets/dashboard.png"
                 alt="Sharebills desktop dashboard with workspace navigation, balances, recent activity, and rent settlements"
                 className="block h-auto w-full rounded-t-[6px] sm:rounded-t-[10px]"
               />
@@ -1178,7 +1190,7 @@ export default function App() {
       </section>
 
       {/* =================================================================== */}
-      {/* SECTION 4: PROJECTS DONE (SHAREBILLS PROMINENT -> RAG BOT -> OTHERS) */}
+      {/* SECTION 4: PROJECTS                                                */}
       {/* =================================================================== */}
       <section
         id="projects"
@@ -1189,213 +1201,47 @@ export default function App() {
             Technical Portfolio
           </span>
           <h2 className="font-serif mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl md:text-4xl">
-            Projects Done &amp; Technologies Used
+            Selected Projects
           </h2>
-          <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-slate-600">
-            A structured look at the software applications, algorithms, and AI tools I have engineered.
+          <p className="mx-auto mt-2 max-w-xl text-xs text-slate-600 sm:text-sm">
+            A few things I have built. Select a project to see its details.
           </p>
         </RevealOnScroll>
 
-        {/* 1. SHAREBILLS (MOST PROMINENT HERO CARD) */}
-        <RevealOnScroll delay={100} className="mt-10">
-          <div className="relative overflow-hidden rounded-[32px] border-2 border-emerald-300 bg-gradient-to-br from-white via-white/95 to-emerald-50/50 p-6 sm:p-8 shadow-xl shadow-emerald-900/5">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="max-w-2xl">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-emerald-800">
-                    Flagship Project • Web &amp; Mobile
-                  </span>
-                  <span className="text-xs font-semibold text-slate-500">Live Production App</span>
-                </div>
-                <h3 className="font-serif mt-3 text-2xl sm:text-3xl font-bold text-slate-900">
-                  ShareBills — Shared Expense Management Platform
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {portfolioProjects.map((project, index) => (
+            <RevealOnScroll key={project.id} delay={index * 50}>
+              <article className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md">
+                <span className="w-fit rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">
+                  {project.badge}
+                </span>
+                <h3 className="font-serif mt-3 text-base font-bold leading-snug text-slate-900">
+                  {project.title}
                 </h3>
-                <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-slate-600">
-                  A full-stack web and mobile application designed to simplify shared living expenses, rent tracking, and group debt settlements. Built from scratch with an automated algorithm that cuts down circular roommate debts by 67%, 1-tap Google Pay / UPI payment links, and in-chat expense disputes.
+                <p className="mt-2 line-clamp-3 flex-1 text-xs leading-relaxed text-slate-600">
+                  {project.desc}
                 </p>
-
-                <div className="mt-4">
-                  <span className="text-[11px] font-bold text-slate-700">Technology Used: </span>
-                  <span className="text-xs font-medium text-emerald-800">
-                    React.js, Tailwind CSS, PWA, UPI Payment Deep-Links, Graph Algorithms, Real-Time In-App Chat
-                  </span>
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {['React.js', 'Tailwind CSS', 'Graph Debt Minimization', 'UPI Deep-Links', 'Rent Tracker', 'PWA'].map((t) => (
-                    <span key={t} className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-900">
-                      {t}
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {project.tags.slice(0, 3).map((tag) => (
+                    <span key={tag} className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-medium text-slate-600">
+                      {tag}
                     </span>
                   ))}
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <a
-                    href="https://sharebills.in/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#3E7754] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#356447]"
-                  >
-                    <span>Visit Live Website (sharebills.in)</span>
-                    <ExternalLink size={13} />
-                  </a>
-                  <a
-                    href="https://github.com/taranveer178"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:text-emerald-800"
-                  >
-                    <CodeXml size={14} />
-                    <span>View GitHub</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Sharebills Highlights Box */}
-              <div className="w-full lg:w-72 shrink-0 rounded-2xl border border-emerald-200 bg-white p-4 shadow-sm">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">
-                  Key Capabilities
-                </span>
-                <div className="mt-3 space-y-2.5 text-xs">
-                  <div className="rounded-xl bg-emerald-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-emerald-800">Smart Settlement Engine</p>
-                    <p className="font-bold text-slate-900">67% fewer transfers</p>
-                  </div>
-                  <div className="rounded-xl bg-emerald-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-emerald-800">Rent Ledger</p>
-                    <p className="font-bold text-slate-900">Automated Daily Reminders</p>
-                  </div>
-                  <div className="rounded-xl bg-emerald-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-emerald-800">Multi-Currency</p>
-                    <p className="font-bold text-slate-900">INR, USD, EUR, GBP, CAD</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* 2. RAG BOT (2ND PROMINENT CARD) */}
-        <RevealOnScroll delay={150} className="mt-6">
-          <div className="relative overflow-hidden rounded-[28px] border-2 border-indigo-200 bg-gradient-to-br from-white via-white/95 to-indigo-50/40 p-6 sm:p-7 shadow-lg shadow-indigo-900/5">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="max-w-2xl">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-indigo-800">
-                    2nd Major Project • AI &amp; Vector Search
-                  </span>
-                  <span className="text-xs font-semibold text-slate-500">Live Dual Deployment</span>
-                </div>
-                <h3 className="font-serif mt-2.5 text-xl sm:text-2xl font-bold text-slate-900">
-                  Taran's Dual AI Assistant (RAG Pipeline)
-                </h3>
-                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
-                  Two retrieval-augmented generation chatbots trained on my curriculum vitae to answer visitor inquiries conversationally. One version is deployed serverlessly on Cloudflare Workers for fast edge replies, and another version is hosted as a web application on Streamlit using FAISS vector indexing.
-                </p>
-
-                <div className="mt-3">
-                  <span className="text-[11px] font-bold text-slate-700">Technology Used: </span>
-                  <span className="text-xs font-medium text-indigo-800">
-                    Python 3, Google Generative AI, FAISS Vector DB, LangChain, PyPDF, Cloudflare Workers, Streamlit
-                  </span>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {['Python', 'LangChain', 'FAISS Vector Search', 'Cloudflare Workers', 'Streamlit', 'Google AI'].map((t) => (
-                    <span key={t} className="rounded-xl border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[11px] font-bold text-indigo-900">
-                      {t}
+                  {project.tags.length > 3 && (
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-medium text-slate-500">
+                      +{project.tags.length - 3}
                     </span>
-                  ))}
+                  )}
                 </div>
-
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <a
-                    href="https://taranveer.streamlit.app/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-indigo-700"
-                  >
-                    <span>Try Streamlit Version Live</span>
-                    <ExternalLink size={13} />
-                  </a>
-                  <a
-                    href="https://github.com/Taranveer178"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-indigo-800"
-                  >
-                    <CodeXml size={14} />
-                    <span>View GitHub Repo</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* RAG Bot Highlights */}
-              <div className="w-full lg:w-72 shrink-0 rounded-2xl border border-indigo-200 bg-white p-4 shadow-sm">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-800">
-                  Architectural Pipeline
-                </span>
-                <div className="mt-3 space-y-2 text-xs">
-                  <div className="rounded-xl bg-indigo-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-indigo-800">Context Extraction</p>
-                    <p className="font-semibold text-slate-900">PyPDF Document Chunking</p>
-                  </div>
-                  <div className="rounded-xl bg-indigo-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-indigo-800">Vector Index</p>
-                    <p className="font-semibold text-slate-900">FAISS Similarity Match</p>
-                  </div>
-                  <div className="rounded-xl bg-indigo-50/70 p-2.5">
-                    <p className="text-[10px] font-bold text-indigo-800">Serverless Host</p>
-                    <p className="font-semibold text-slate-900">Cloudflare Workers Edge</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* 3. OTHER PROJECTS (LMS, ROOMSPLIT, CMS, DEVOPS) */}
-        <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
-          {portfolioProjects.filter((p) => !p.prominent).map((p, idx) => (
-            <RevealOnScroll key={p.id} delay={idx * 60}>
-              <div className="h-full flex flex-col justify-between rounded-3xl border border-blue-100 bg-white p-6 shadow-sm transition hover:border-blue-300 hover:shadow-md">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700">
-                      {p.badge}
-                    </span>
-                    <span className="text-[11px] font-semibold text-slate-400">{p.category.toUpperCase()}</span>
-                  </div>
-
-                  <h4 className="font-serif mt-3 text-lg font-bold text-slate-900">{p.title}</h4>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{p.desc}</p>
-
-                  <div className="mt-3">
-                    <span className="text-[10px] font-bold text-slate-700">Technology Used: </span>
-                    <span className="text-xs text-blue-800 font-medium">{p.tech}</span>
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {p.tags.map((t) => (
-                      <span key={t} className="rounded-lg bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-700">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between">
-                  <a
-                    href={p.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline"
-                  >
-                    <span>{p.linkText}</span>
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-              </div>
+                <button
+                  type="button"
+                  onClick={() => setPreviewModal({ type: 'project', project })}
+                  className="mt-5 inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-blue-700 transition hover:text-blue-900"
+                >
+                  View details
+                  <ArrowRight size={14} />
+                </button>
+              </article>
             </RevealOnScroll>
           ))}
         </div>
@@ -1867,67 +1713,74 @@ export default function App() {
               </p>
 
               {contactSubmitted ? (
-                <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center">
-                  <CheckCircle2 size={32} className="mx-auto text-emerald-600" />
-                  <h4 className="mt-2 text-sm font-bold text-emerald-950">Message Transmitted!</h4>
-                  <p className="mt-1 text-xs text-emerald-800">
-                    Thank you, {contactName || 'for reaching out'}. Your message has been received and I will reply to {contactEmail} shortly.
-                  </p>
+                <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+                  <CheckCircle2 size={40} className="mx-auto text-emerald-600" />
+                  <h4 className="mt-3 text-base font-bold text-emerald-950">Message sent!</h4>
+                  <p className="mt-1 text-sm text-emerald-800">Thanks for reaching out. I’ll get back to you soon.</p>
                   <button
                     type="button"
                     onClick={() => setContactSubmitted(false)}
-                    className="mt-4 rounded-xl bg-blue-600 px-4 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-blue-700"
+                    className="mt-4 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700"
                   >
-                    Send Another Message
+                    Send another message
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleContactSubmit} className="mt-5 space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-700">Your Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={contactName}
-                        onChange={(e) => setContactName(e.target.value)}
-                        placeholder="Your name"
-                        className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-700">Your Email</label>
-                      <input
-                        type="email"
-                        required
-                        value={contactEmail}
-                        onChange={(e) => setContactEmail(e.target.value)}
-                        placeholder="you@example.com"
-                        className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white"
-                      />
-                    </div>
-                  </div>
-
+                <form
+                  action="https://formspree.io/f/xwlpojyk"
+                  method="POST"
+                  id="contactForm"
+                  onSubmit={handleContactSubmit}
+                  className="mt-5 space-y-4"
+                >
+                {contactError && (
+                  <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+                    {contactError}
+                  </p>
+                )}
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-700">Message</label>
-                    <textarea
-                      rows={4}
+                    <label className="block text-[11px] font-bold text-slate-700">Your Name</label>
+                    <input
+                      type="text"
+                      name="name"
                       required
-                      value={contactMessage}
-                      onChange={(e) => setContactMessage(e.target.value)}
-                      placeholder="Hi Taran, wanted to connect regarding your work on ShareBills or web development..."
-                      className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 text-xs outline-none focus:border-blue-500 focus:bg-white"
+                      placeholder="Your name"
+                      className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white"
                     />
                   </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-700">Your Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="you@example.com"
+                      className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white"
+                    />
+                  </div>
+                </div>
 
-                  <button
-                    type="submit"
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-blue-600 to-blue-700 text-xs font-bold text-white shadow-md shadow-blue-600/25 transition hover:from-blue-500 hover:to-blue-700"
-                  >
-                    <span>Send Message</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </form>
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700">Message</label>
+                  <textarea
+                    rows={4}
+                    name="message"
+                    required
+                    placeholder="Hi Taran, wanted to connect regarding your work on ShareBills or web development..."
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 text-xs outline-none focus:border-blue-500 focus:bg-white"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={contactSubmitting}
+                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-blue-600 to-blue-700 text-xs font-bold text-white shadow-md shadow-blue-600/25 transition hover:from-blue-500 hover:to-blue-700 disabled:cursor-wait disabled:opacity-70"
+                >
+                  <span>{contactSubmitting ? 'Sending...' : 'Send Message'}</span>
+                  {!contactSubmitting && <ArrowRight size={14} />}
+                </button>
+              </form>
               )}
             </div>
           </div>
@@ -2011,7 +1864,7 @@ export default function App() {
       {/* =================================================================== */}
       {/* FLOATING CHATBOT (RIGHT SIDE)                                       */}
       {/* =================================================================== */}
-      <div className="fixed bottom-5 right-5 z-50">
+      <div className="fixed bottom-3 right-3 z-50 sm:bottom-5 sm:right-5">
         {!chatOpen ? (
           <button
             type="button"
@@ -2032,81 +1885,56 @@ export default function App() {
           <div
             role="region"
             aria-label="Chat with Taran's AI Assistant"
-            className="flex h-[490px] w-[330px] flex-col overflow-hidden rounded-[26px] border border-blue-100 bg-white shadow-2xl transition-all sm:w-[370px]"
+            className="flex h-[min(680px,calc(100dvh-1.5rem))] w-[calc(100vw-1.5rem)] max-w-[390px] flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] transition-all sm:h-[min(680px,calc(100dvh-2.5rem))] sm:w-[390px]"
           >
             {/* Chatbot Header */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 p-3.5 text-white">
-              <div className="flex items-center gap-2.5">
-                <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md">
-                  <Bot size={18} />
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-blue-600 bg-emerald-400" />
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-100 bg-white px-5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
+                  <Sparkles size={18} />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xs font-bold leading-tight">Taran's AI Assistant</h3>
-                  <p className="text-[10px] text-blue-100 flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Online • CV Assistant
+                  <h3 className="text-sm font-bold leading-tight text-slate-900">Taran's AI Assistant</h3>
+                  <p className="mt-1 flex items-center gap-1.5 text-[11px] text-slate-500">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-100" /> Online
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={handleResetChat}
                   title="Reset conversation"
                   aria-label="Reset conversation"
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-white/80 transition hover:bg-white/20 hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                 >
-                  <RotateCcw size={14} />
+                  <Trash2 size={16} />
                 </button>
                 <button
                   type="button"
                   onClick={() => setChatOpen(false)}
                   title="Close chat"
                   aria-label="Close chat"
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-white/80 transition hover:bg-white/20 hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                 >
-                  <X size={16} />
+                  <X size={18} />
                 </button>
               </div>
             </div>
 
-            {/* Quick Suggestion Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto border-b border-slate-100 bg-slate-50/80 px-3 py-2 text-[10px]">
-              {[
-                'Tell me about ShareBills',
-                'What is his tech stack?',
-                'Work at Binary Data',
-                'Education & Degree',
-              ].map((chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  onClick={() => handleChatSend(chip)}
-                  className="whitespace-nowrap rounded-full border border-blue-200/80 bg-white px-2.5 py-1 font-medium text-slate-700 shadow-2xs transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-
             {/* Messages Body */}
-            <div className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-[#F8FAFD] text-xs">
+            <div className="chat-messages-scrollbar flex-1 space-y-4 overflow-y-auto bg-white px-5 py-5 text-[13px]">
               {chatMessages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  {msg.sender === 'bot' && (
-                    <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-[10px] shadow-xs">
-                      <Bot size={13} />
-                    </div>
-                  )}
                   <div
-                    className={`max-w-[82%] rounded-2xl p-3 leading-relaxed shadow-xs ${
+                    className={`max-w-[88%] px-4 py-3 leading-relaxed ${
                       msg.sender === 'user'
-                        ? 'bg-blue-600 text-white rounded-tr-xs'
-                        : 'bg-white text-slate-800 border border-slate-100 rounded-tl-xs'
+                        ? 'rounded-2xl rounded-br-md bg-blue-600 text-white'
+                        : 'rounded-2xl rounded-bl-md border border-slate-200 bg-slate-100 text-slate-800'
                     }`}
                   >
                     {msg.text}
@@ -2115,11 +1943,8 @@ export default function App() {
               ))}
 
               {isBotTyping && (
-                <div className="flex items-center gap-2">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-white text-[10px]">
-                    <Bot size={13} />
-                  </div>
-                  <div className="rounded-2xl border border-slate-100 bg-white px-3 py-2 text-slate-500 shadow-xs">
+                <div className="flex">
+                  <div className="rounded-2xl rounded-bl-md border border-slate-200 bg-slate-100 px-4 py-3 text-slate-500">
                     <span className="inline-flex gap-1">
                       <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" />
                       <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:0.2s]" />
@@ -2137,23 +1962,25 @@ export default function App() {
                 e.preventDefault();
                 handleChatSend();
               }}
-              className="flex items-center gap-2 border-t border-slate-100 bg-white p-2.5"
+              className="shrink-0 border-t border-slate-100 bg-white px-5 py-4"
             >
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder={!chatUserName ? 'Type your name or question...' : 'Ask about Taran...'}
-                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs outline-none focus:border-blue-500 focus:bg-white"
-              />
-              <button
-                type="submit"
-                disabled={!chatInput.trim()}
-                aria-label="Send message"
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 text-white transition disabled:opacity-40 hover:bg-blue-700"
-              >
-                <Send size={14} />
-              </button>
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 p-1 pl-4 transition focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder={!chatUserName ? 'Type your name...' : 'Ask me anything...'}
+                  className="min-w-0 flex-1 bg-transparent py-2 text-[13px] text-slate-800 outline-none placeholder:text-slate-500"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatInput.trim()}
+                  aria-label="Send message"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-600 transition hover:bg-blue-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Send size={16} />
+                </button>
+              </div>
             </form>
           </div>
         )}
@@ -2162,6 +1989,91 @@ export default function App() {
       {/* =================================================================== */}
       {/* RESUME / CREDENTIALS MODAL                                          */}
       {/* =================================================================== */}
+      {previewModal && typeof previewModal === 'object' && previewModal.type === 'project' && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+          onClick={() => setPreviewModal(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
+            onClick={(event) => event.stopPropagation()}
+            className="max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-white/80 bg-white p-5 text-slate-900 shadow-2xl sm:p-7"
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-blue-700">
+                  {previewModal.project.badge}
+                </span>
+                <h2 id="project-modal-title" className="font-serif mt-3 text-xl font-bold leading-snug sm:text-2xl">
+                  {previewModal.project.title}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewModal(null)}
+                aria-label="Close project details"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-5">
+              <p className="text-sm leading-relaxed text-slate-600">{previewModal.project.desc}</p>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">Built with</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-800">{previewModal.project.tech}</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {previewModal.project.tags.map((tag) => (
+                  <span key={tag} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {previewModal.project.metrics && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {previewModal.project.metrics.map((metric) => (
+                    <div key={metric.label} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                      <p className="text-[11px] font-semibold text-slate-500">{metric.label}</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">{metric.val}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+                <a
+                  href={previewModal.project.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-700"
+                >
+                  {previewModal.project.linkText}
+                  <ExternalLink size={13} />
+                </a>
+                {previewModal.project.secondaryLink && (
+                  <a
+                    href={previewModal.project.secondaryLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:text-blue-700"
+                  >
+                    {previewModal.project.secondaryText}
+                    <ExternalLink size={13} />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {previewModal === 'resume' && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
