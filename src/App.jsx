@@ -1930,7 +1930,7 @@ export default function App() {
           </div>
           <div className="flex flex-col gap-2 pt-5 text-[11px] text-white/50 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} Taranveer Singh. All rights reserved.</p>
-            <p>Digital Curriculum Vitae • Mohali, Punjab, India.</p>
+            <p>Digital CV • Mohali, Punjab, India.</p>
           </div>
         </div>
       </footer>
