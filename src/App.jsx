@@ -722,7 +722,7 @@ export default function App() {
               {[
                 { label: 'Introduction', id: 'top' },
                 { label: 'ShareBills App', id: 'mobile-showcase' },
-                { label: 'Projects Done', id: 'projects' },
+                { label: 'Projects', id: 'projects' },
                 { label: 'Resume & Work', id: 'resume' },
                 { label: 'Technical Stack', id: 'skills' },
                 { label: 'FAQ', id: 'faq' },
