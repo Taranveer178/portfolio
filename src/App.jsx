@@ -665,7 +665,7 @@ export default function App() {
               { label: 'Resume & Work', id: 'resume' },
               { label: 'Technical Stack', id: 'skills' },
               { label: 'FAQ', id: 'faq' },
-              { label: 'Connect', id: 'contact' },
+             
             ].map((item) => (
               <button
                 key={item.id}
