@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import BlogApp from './BlogApp.jsx';
 import {
   Download,
   ChevronDown,
@@ -405,7 +406,7 @@ const getBotReply = (input, userName) => {
 // ===================================================================
 // MAIN EXPORT COMPONENT
 // ===================================================================
-export default function App() {
+function PortfolioApp() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
@@ -665,7 +666,6 @@ export default function App() {
               { label: 'Resume & Work', id: 'resume' },
               { label: 'Technical Stack', id: 'skills' },
               { label: 'FAQ', id: 'faq' },
-             
             ].map((item) => (
               <button
                 key={item.id}
@@ -676,6 +676,9 @@ export default function App() {
                 {item.label}
               </button>
             ))}
+            <a href="/blog" className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-blue-50 hover:text-blue-700">
+              Blog
+            </a>
           </div>
 
           <div className="hidden items-center gap-2 sm:flex">
@@ -737,6 +740,9 @@ export default function App() {
                   {item.label}
                 </button>
               ))}
+              <a href="/blog" onClick={() => setMobileMenuOpen(false)} className="rounded-2xl bg-slate-100/80 px-3.5 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">
+                Blog
+              </a>
             </div>
             <div className="mt-3 flex flex-col gap-2 border-t border-slate-200/70 pt-3">
               <button
@@ -1926,6 +1932,7 @@ export default function App() {
               >
                 Connect
               </button>
+              <a href="/blog" className="transition-colors hover:text-white">Blog</a>
             </nav>
           </div>
           <div className="flex flex-col gap-2 pt-5 text-[11px] text-white/50 sm:flex-row sm:items-center sm:justify-between">
@@ -2249,4 +2256,12 @@ export default function App() {
       )}
     </div>
   );
+}
+
+export default function App() {
+  const pathname = window.location.pathname;
+  if (pathname === '/add-blog' || pathname === '/blog' || pathname.startsWith('/blog/')) {
+    return <BlogApp />;
+  }
+  return <PortfolioApp />;
 }
