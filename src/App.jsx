@@ -398,7 +398,7 @@ const getBotReply = (input, userName) => {
     return `${namePrefix}You can reach Taran by email at staranveer178@gmail.com, by phone at +91 62839 45840, or connect on LinkedIn (linkedin.com/in/taranveer-singh-2445871b6).`;
   }
   if (query.includes('resume') || query.includes('cv')) {
-    return `${namePrefix}You can download Taran's complete resume anytime by clicking the "Download CV" button at the top of the page!`;
+    return `${namePrefix}You can download Taran's complete resume from the Download CV button in the header.`;
   }
   return `Thanks for asking, ${userName || 'friend'}! Taran is a Full-Stack Web Developer proficient in PHP, Laravel, React, and MySQL, currently working at Binary Data Pvt Ltd. Feel free to ask about his projects, skills, or education.`;
 };
@@ -663,9 +663,7 @@ function PortfolioApp() {
               { label: 'Introduction', id: 'top' },
               { label: 'ShareBills App', id: 'mobile-showcase' },
               { label: 'Projects Done', id: 'projects' },
-              { label: 'Resume & Work', id: 'resume' },
               { label: 'Technical Stack', id: 'skills' },
-              { label: 'FAQ', id: 'faq' },
             ].map((item) => (
               <button
                 key={item.id}
@@ -726,9 +724,7 @@ function PortfolioApp() {
                 { label: 'Introduction', id: 'top' },
                 { label: 'ShareBills App', id: 'mobile-showcase' },
                 { label: 'Projects', id: 'projects' },
-                { label: 'Resume & Work', id: 'resume' },
                 { label: 'Technical Stack', id: 'skills' },
-                { label: 'FAQ', id: 'faq' },
                 { label: 'Connect', id: 'contact' },
               ].map((item) => (
                 <button

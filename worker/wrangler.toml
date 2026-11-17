@@ -14,3 +14,11 @@ migrations_dir = "migrations"
 [[r2_buckets]]
 binding = "BLOG_IMAGES"
 bucket_name = "taranveer-blog-images"
+
+[[routes]]
+pattern = "taranveer.in/api/*"
+zone_name = "taranveer.in"
+
+[[routes]]
+pattern = "www.taranveer.in/api/*"
+zone_name = "taranveer.in"

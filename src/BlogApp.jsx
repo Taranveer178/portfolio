@@ -8,6 +8,15 @@ const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const apiUrl = (path) => `${BLOG_API_BASE}/${path.replace(/^\/+/, '')}`;
 const imageUrl = (path) => new URL(path, `${new URL(BLOG_API_BASE, window.location.origin)}/`).toString();
 
+async function fetchBlogApi(path, options) {
+  const response = await fetch(apiUrl(path), options);
+  const contentType = response.headers.get('Content-Type') || '';
+  if (!contentType.toLowerCase().includes('application/json')) {
+    throw new Error('The blog API is not active on this domain yet. Deploy the Worker route for taranveer.in/api/* (see README.md).');
+  }
+  return { response, data: await response.json() };
+}
+
 const formatDate = (date) => new Intl.DateTimeFormat('en-IN', {
   day: 'numeric',
   month: 'long',
@@ -74,13 +83,13 @@ function BlogIndex() {
 
   useEffect(() => {
     document.title = 'Blog — Taranveer Singh';
-    fetch(apiUrl('posts'))
-      .then(async (response) => {
-        if (!response.ok) throw new Error('The blog is temporarily unavailable.');
-        return response.json();
+    fetchBlogApi('posts')
+      .then(({ response, data }) => {
+        if (!response.ok) throw new Error(data.error || 'The blog is temporarily unavailable.');
+        return data;
       })
       .then((data) => setPosts(data.posts))
-      .catch(() => setError('The blog service is unavailable. Set VITE_BLOG_API_URL to the deployed Worker API and try again.'))
+      .catch((requestError) => setError(requestError.message || 'The blog service is unavailable.'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -171,17 +180,17 @@ function BlogPost({ slug }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch(apiUrl(`posts/${encodeURIComponent(slug)}`))
-      .then(async (response) => {
+    fetchBlogApi(`posts/${encodeURIComponent(slug)}`)
+      .then(({ response, data }) => {
         if (response.status === 404) throw new Error('This article could not be found.');
-        if (!response.ok) throw new Error('The article is temporarily unavailable.');
-        return response.json();
+        if (!response.ok) throw new Error(data.error || 'The article is temporarily unavailable.');
+        return data;
       })
       .then((data) => {
         setPost(data.post);
         document.title = `${data.post.title} — Taranveer Singh`;
       })
-      .catch(() => setError('The article service is unavailable. Check the blog API configuration and try again.'))
+      .catch((requestError) => setError(requestError.message || 'The article service is unavailable.'))
       .finally(() => setLoading(false));
   }, [slug]);
 
@@ -271,19 +280,18 @@ function AddBlog() {
     if (image) formData.set('image', image);
 
     try {
-      const response = await fetch(apiUrl('posts'), {
+      const { response, data: result } = await fetchBlogApi('posts', {
         method: 'POST',
         headers: { 'x-admin-password': password },
         body: formData,
       });
-      const result = await response.json();
       if (!response.ok) {
         setError(response.status === 401 ? 'That password was not accepted.' : result.error || 'The post could not be published.');
         return;
       }
       window.location.assign(`/blog/${encodeURIComponent(result.post.slug)}`);
-    } catch {
-      setError('Could not reach the blog service. Check the API URL and try again.');
+    } catch (requestError) {
+      setError(requestError.message || 'Could not reach the blog service. Check the API URL and try again.');
     } finally {
       setSubmitting(false);
     }
