@@ -10,20 +10,24 @@ Build for production:
 
 ## Blog publishing
 
-The public blog is available at `/blog`; individual posts use `/blog/:slug`, and the protected editor is at `/add-blog`.
-Publishing is handled by the Cloudflare Worker in `worker/`, with Cloudflare D1 for posts and R2 for cover images.
-The admin password is a Worker secret and is never included in the frontend bundle or stored in the browser.
+The public blog is available at `/blog`; individual posts use `/blog/:slug`, and the editor is at `/add-blog`.
+Blog posts use Supabase Postgres, Supabase Auth, and the `blog-covers` Storage bucket. RLS policies make posts public to read while restricting publishing and uploads to an explicitly authorized admin user.
+The editor supports images between text blocks and embedded YouTube/Vimeo videos; video files are not uploaded to storage. You can also switch to HTML source mode for an article, with a sanitized preview. Scripts, unsafe markup, and embeds other than YouTube/Vimeo are removed before the article is saved or displayed. Switching modes preserves both drafts, and only the selected mode is published.
 
-### Configure and deploy the API
+### Configure Supabase
 
-1. Make sure `taranveer.in` is an active zone on the Cloudflare account, then install Wrangler or use it through `npx wrangler`.
-2. From `worker/`, create the D1 database (`npx wrangler d1 create taranveer-blog`) and R2 bucket (`npx wrangler r2 bucket create taranveer-blog-images`).
-3. Replace `database_id` in `worker/wrangler.toml` with the ID returned by Cloudflare.
-4. Apply the migration and set the publishing password as a secret:
-   - `npx wrangler d1 migrations apply taranveer-blog --remote`
-   - `npx wrangler secret put BLOG_ADMIN_PASSWORD` (enter the value only at Wrangler's prompt; do not put it in a file or command)
-5. The Worker is configured to handle `https://taranveer.in/api/*` and `https://www.taranveer.in/api/*`. Keep `ALLOWED_ORIGINS` limited to the exact site origins, then deploy with `npx wrangler deploy`.
-6. The site uses `/api` by default, so no frontend secret or API URL is needed for production. Vite proxies local `/api` requests to `https://taranveer.in`; for a different Worker hostname, set `VITE_BLOG_API_URL` to its `/api` URL.
+1. Create a Supabase Free project.
+2. Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from the project's API settings. Configure the same values in the production frontend build environment.
+3. Run [`supabase/migrations/20261117203000_create_blog.sql`](./supabase/migrations/20261117203000_create_blog.sql) in the Supabase SQL Editor. It creates the posts table, public cover-image bucket, and row-level security policies.
+4. Create an admin user under **Authentication → Users**. Copy that user's UUID and add it to the allowlist in the SQL Editor:
 
-The Worker limits failed password attempts, validates post and image sizes, and accepts only configured browser origins. Do not expose the admin password as a `VITE_` variable.
+   ```sql
+   insert into public.blog_admins (user_id) values ('ADMIN_USER_UUID');
+   ```
+
+5. Restart local Vite or redeploy the site. Sign in at `/add-blog` with that Supabase user's email and password.
+
+The Supabase anon/publishable key is intended for browser use; RLS is what protects writes. Never put a Supabase service-role key in the frontend or commit `.env.local`. Supabase Free currently includes 500 MB database, 1 GB file storage, and 5 GB egress; inactive free projects may pause after one week. Review [current Supabase limits](https://supabase.com/pricing).
+
+If the app reports that `public.blog_posts` is missing, run the migration in step 3. If the table already exists, refresh the Data API schema cache in Supabase or run `NOTIFY pgrst, 'reload schema';` in the SQL Editor. Restart Vite after changing `.env` values.
 

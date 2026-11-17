@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import BlogApp from './BlogApp.jsx';
+import React, { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import {
   Download,
   ChevronDown,
@@ -57,6 +56,8 @@ import {
   Award,
   BookOpen
 } from 'lucide-react';
+
+const BlogApp = lazy(() => import('./BlogApp.jsx'));
 
 // ===================================================================
 // BASE64 ASSETS
@@ -2257,7 +2258,11 @@ function PortfolioApp() {
 export default function App() {
   const pathname = window.location.pathname;
   if (pathname === '/add-blog' || pathname === '/blog' || pathname.startsWith('/blog/')) {
-    return <BlogApp />;
+    return (
+      <Suspense fallback={<main className="min-h-screen bg-[#F8FAFC] p-8 text-sm text-slate-500">Loading blog…</main>}>
+        <BlogApp />
+      </Suspense>
+    );
   }
   return <PortfolioApp />;
 }
