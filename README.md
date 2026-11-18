@@ -19,7 +19,7 @@ The sitemap includes the homepage, blog index, and all published post URLs. `npm
 
 1. Create a Supabase Free project.
 2. Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from the project's API settings. Configure the same values in the production frontend build environment.
-3. Run the SQL migrations in `supabase/migrations/` in filename order in the Supabase SQL Editor. The first migration creates the posts table, public cover-image bucket, and publishing policies. The second adds author details, admin edit/delete permissions, and moderated comments.
+3. Run the SQL migrations in `supabase/migrations/` in filename order in the Supabase SQL Editor. The first migration creates the posts table, public cover-image bucket, and publishing policies. The second adds author details, admin edit/delete permissions, and moderated comments. The third adds blog SEO metadata fields.
 4. Create an admin user under **Authentication → Users**. Copy that user's UUID and add it to the allowlist in the SQL Editor:
 
    ```sql

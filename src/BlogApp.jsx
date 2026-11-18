@@ -9,6 +9,7 @@ import DOMPurify from 'dompurify';
 import { supabase } from './supabase.js';
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const BLOG_HERO_IMAGE = '/assets/blog%20hero.webp';
 const STORAGE_BUCKET = 'blog-covers';
 const CONTENT_BLOCKS_PREFIX = 'BLOG_BLOCKS_V1:';
 const HTML_CONTENT_PREFIX = 'BLOG_HTML_V1:';
@@ -208,6 +209,13 @@ const formatDate = (date) => new Intl.DateTimeFormat('en-IN', {
   year: 'numeric',
 }).format(new Date(date));
 
+const toDateTimeInput = (date) => {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) return '';
+  parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
+  return parsedDate.toISOString().slice(0, 16);
+};
+
 function BlogHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const mainLinks = [
@@ -396,27 +404,19 @@ function BlogIndex() {
 
   return (
     <BlogLayout>
-      <main className="mx-auto max-w-6xl px-4 pb-20 pt-12 sm:px-6 sm:pt-16">
-        <section className="relative overflow-hidden rounded-[2rem] bg-[#0A1322] px-6 py-12 text-white sm:px-12 sm:py-16">
-          <div className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-blue-500/25 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-300" />
-              The developer journal
-            </div>
-            <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-              Ideas, lessons &amp; <span className="text-blue-300">things I build.</span>
-            </h1>
-            <p className="mt-5 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
-              Notes from the workbench: practical web development, useful discoveries, and the occasional lesson learned the hard way.
-            </p>
-            <a href="#latest" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-white transition hover:text-blue-200">
-              Explore the latest <ArrowRight size={16} />
-            </a>
-          </div>
-          <div aria-hidden="true" className="absolute bottom-8 right-10 hidden rotate-[-8deg] rounded-2xl border border-white/15 bg-white/5 p-5 shadow-2xl backdrop-blur sm:block">
-            <BookOpen size={42} strokeWidth={1.2} className="text-blue-200" />
+      <main className="mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
+        <section
+          aria-labelledby="blog-heading"
+          className="relative flex min-h-64 items-center overflow-hidden rounded-3xl bg-cover bg-center px-6 py-12 sm:min-h-80 sm:px-12"
+          style={{ backgroundImage: `linear-gradient(90deg, rgba(10, 19, 34, 0.78), rgba(10, 19, 34, 0.28)), url("${BLOG_HERO_IMAGE}")` }}
+        >
+          <div className="relative">
+            <h1 id="blog-heading" className="font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">Tech Insights</h1>
+            <nav aria-label="Breadcrumb" className="mt-5 flex items-center gap-2 text-sm font-medium text-white/85">
+              <a href="/" className="transition hover:text-white">🏠 Home</a>
+              <span aria-hidden="true">&gt;&gt;</span>
+              <span aria-current="page" className="text-white">Blog</span>
+            </nav>
           </div>
         </section>
 
@@ -496,7 +496,7 @@ function BlogPost({ slug }) {
 
     supabase
       .from('blog_posts')
-      .select('id, slug, title, excerpt, content, category, author, cover_image, created_at')
+      .select('id, slug, title, excerpt, content, category, author, cover_image, created_at, seo_title, seo_description, seo_keywords')
       .eq('slug', slug)
       .maybeSingle()
       .then(({ data, error: requestError }) => {
@@ -507,7 +507,14 @@ function BlogPost({ slug }) {
         }
         const loadedPost = toPost(data);
         setPost(loadedPost);
-        document.title = `${loadedPost.title} — Taranveer Singh`;
+        document.title = loadedPost.seo_title || `${loadedPost.title} — Taranveer Singh`;
+        document.querySelector('meta[name="description"]')?.setAttribute(
+          'content',
+          loadedPost.seo_description || loadedPost.excerpt,
+        );
+        if (loadedPost.seo_keywords) {
+          document.querySelector('meta[name="keywords"]')?.setAttribute('content', loadedPost.seo_keywords);
+        }
         return supabase
           .from('blog_comments')
           .select('id, author_name, body, created_at')
@@ -573,24 +580,32 @@ function BlogPost({ slug }) {
 
   return (
     <BlogLayout>
-      <main className="mx-auto max-w-6xl px-4 pb-20 pt-10 sm:px-6 sm:pt-14">
-        <a href="/blog" className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 transition hover:text-blue-700"><ArrowLeft size={14} /> All articles</a>
+      <main className="mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
         {loading && <p className="mt-10 rounded-3xl border border-slate-200 bg-white p-8 text-sm text-slate-500">Loading article…</p>}
         {error && <div role="alert" className="mt-10 rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">{error}</div>}
         {post && (
-          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <>
+          <section aria-labelledby="post-heading" className="relative flex min-h-[320px] items-end overflow-hidden rounded-3xl bg-slate-900 px-6 py-8 sm:min-h-[420px] sm:px-12 sm:py-12">
+            <img
+              src={post.coverImage || BLOG_HERO_IMAGE}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/55 to-slate-950/30" />
+            <div className="relative max-w-3xl">
+              <span className="inline-flex rounded-full border border-white/30 bg-black/20 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                {post.category}
+              </span>
+              <h1 id="post-heading" className="font-serif mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                {post.title}
+              </h1>
+            </div>
+          </section>
+
+          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(260px,3fr)]">
             <article className="min-w-0">
-              <header>
-                <div className="flex flex-wrap items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700">
-                  <span>{post.category}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
-                  <span className="inline-flex items-center gap-1.5 font-medium normal-case tracking-normal text-slate-500"><CalendarDays size={13} />{formatDate(post.createdAt)}</span>
-                </div>
-                <h1 className="font-serif mt-5 text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-6xl">{post.title}</h1>
-                <p className="mt-5 text-base leading-7 text-slate-600 sm:text-lg">{post.excerpt}</p>
-              </header>
-              {post.coverImage && <img src={post.coverImage} alt="" className="mt-9 max-h-[520px] w-full rounded-[2rem] bg-slate-100 object-cover shadow-lg shadow-slate-900/5" />}
-              <div className="mt-10 border-t border-slate-200 pt-8">
+              <p className="mb-8 text-base leading-7 text-slate-600 sm:text-lg">{post.excerpt}</p>
+              <div className="border-t border-slate-200 pt-8">
                 <ArticleContent content={post.content} />
                 <div className="mt-12 border-t border-slate-200 pt-6">
                   <ShareLinks
@@ -653,7 +668,7 @@ function BlogPost({ slug }) {
               </section>
             </article>
 
-            <aside className="lg:sticky lg:top-6">
+            <aside className="lg:sticky lg:top-24">
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700">About this article</p>
                 <div className="mt-5 space-y-4">
@@ -674,6 +689,7 @@ function BlogPost({ slug }) {
               </div>
             </aside>
           </div>
+          </>
         )}
       </main>
     </BlogLayout>
@@ -789,6 +805,10 @@ function AddBlog() {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
+  const [publishDate, setPublishDate] = useState(() => toDateTimeInput(new Date()));
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDescription, setSeoDescription] = useState('');
+  const [seoKeywords, setSeoKeywords] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [category, setCategory] = useState('Development');
   const [author, setAuthor] = useState('Taranveer Singh');
@@ -992,6 +1012,10 @@ function AddBlog() {
     setTitle('');
     setSlug('');
     setSlugTouched(false);
+    setPublishDate(toDateTimeInput(new Date()));
+    setSeoTitle('');
+    setSeoDescription('');
+    setSeoKeywords('');
     setExcerpt('');
     setCategory('Development');
     setAuthor('Taranveer Singh');
@@ -1008,7 +1032,7 @@ function AddBlog() {
     setDashboardError('');
     const { data, error: requestError } = await supabase
       .from('blog_posts')
-      .select('id, slug, title, excerpt, content, category, author, cover_image, created_at')
+      .select('id, slug, title, excerpt, content, category, author, cover_image, created_at, seo_title, seo_description, seo_keywords')
       .eq('id', post.id)
       .single();
     if (requestError) {
@@ -1019,6 +1043,10 @@ function AddBlog() {
     setTitle(post.title);
     setSlug(post.slug);
     setSlugTouched(true);
+    setPublishDate(toDateTimeInput(post.createdAt));
+    setSeoTitle(post.seo_title || '');
+    setSeoDescription(post.seo_description || '');
+    setSeoKeywords(post.seo_keywords || '');
     setExcerpt(post.excerpt);
     setCategory(post.category);
     setAuthor(post.author);
@@ -1097,6 +1125,9 @@ function AddBlog() {
       if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug.trim())) {
         throw new Error('Use a URL slug containing lowercase letters, numbers, and single hyphens.');
       }
+      if (!publishDate || Number.isNaN(new Date(publishDate).getTime())) {
+        throw new Error('Choose a valid publish date and time.');
+      }
       let serializedContent;
 
       if (editorMode === 'html') {
@@ -1155,6 +1186,10 @@ function AddBlog() {
         excerpt: excerpt.trim(),
         category: category.trim(),
         author: author.trim(),
+        created_at: new Date(publishDate).toISOString(),
+        seo_title: seoTitle.trim() || null,
+        seo_description: seoDescription.trim() || null,
+        seo_keywords: seoKeywords.trim() || null,
         content: serializedContent,
         cover_image: coverImage,
       };
@@ -1344,43 +1379,10 @@ function AddBlog() {
                 </section>
               )}
               {dashboardView === 'editor' && (
-              <form onSubmit={handleSubmit} className="space-y-5">
-            <label className="block">
-              <span className="mb-2 block text-xs font-bold text-slate-700">Post title</span>
-              <input
-                type="text"
-                minLength={3}
-                maxLength={120}
-                required
-                value={title}
-                onChange={(event) => {
-                  const nextTitle = event.target.value;
-                  setTitle(nextTitle);
-                  if (!slugTouched) setSlug(slugify(nextTitle));
-                }}
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                placeholder="A clear, memorable headline"
-              />
-            </label>
-
-            <label className="block">
-              <span className="mb-2 block text-xs font-bold text-slate-700">Post URL slug</span>
-              <span className="mb-2 block text-[11px] text-slate-500">https://taranveer.in/blog/{slug || 'your-post-slug'}</span>
-              <input
-                type="text"
-                maxLength={120}
-                pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                required
-                value={slug}
-                onChange={(event) => {
-                  setSlugTouched(true);
-                  setSlug(slugify(event.target.value));
-                }}
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 font-mono text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                placeholder="my-post-slug"
-              />
-            </label>
-
+              <form onSubmit={handleSubmit}>
+                {error && <p role="alert" className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+                <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(300px,3fr)]">
+                  <section className="min-w-0 space-y-5">
             <label className="block">
               <span className="mb-2 block text-xs font-bold text-slate-700">Short introduction</span>
               <textarea
@@ -1394,54 +1396,6 @@ function AddBlog() {
                 placeholder="A short summary shown on the blog homepage (20–280 characters)"
               />
             </label>
-
-            <label className="block">
-              <span className="mb-2 block text-xs font-bold text-slate-700">Author</span>
-              <input
-                type="text"
-                maxLength={80}
-                required
-                value={author}
-                onChange={(event) => setAuthor(event.target.value)}
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                placeholder="Author name"
-              />
-            </label>
-
-            <label className="block">
-              <span className="mb-2 block text-xs font-bold text-slate-700">Category</span>
-              <input
-                type="text"
-                maxLength={32}
-                required
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
-                placeholder="Development"
-              />
-            </label>
-
-            <div>
-              <span className="mb-2 block text-xs font-bold text-slate-700">Cover image <span className="font-medium text-slate-400">· optional, max 5 MB</span></span>
-              {imagePreview ? (
-                <div className="relative overflow-hidden rounded-2xl border border-slate-200">
-                  <img src={imagePreview} alt="Selected cover preview" className="max-h-64 w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => { setImage(null); setExistingCoverImage(''); }}
-                    aria-label="Remove cover image"
-                    className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/80 text-white transition hover:bg-rose-600"
-                  ><X size={16} /></button>
-                </div>
-              ) : (
-                <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-center transition hover:border-blue-400 hover:bg-blue-50/50">
-                  <ImagePlus size={22} className="text-blue-600" />
-                  <span className="mt-2 text-xs font-bold text-slate-700">Choose an image</span>
-                  <span className="mt-1 text-[11px] text-slate-500">JPG, PNG, WebP, or GIF</span>
-                  <input type="file" accept={IMAGE_TYPES.join(',')} onChange={handleImageChange} className="sr-only" />
-                </label>
-              )}
-            </div>
 
             <section aria-label="Article content" className="space-y-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -1577,22 +1531,170 @@ function AddBlog() {
               )}
               <p className="text-right text-[11px] text-slate-400">{articleLength.toLocaleString()} / 50,000 characters</p>
             </section>
+                  </section>
 
-            {error && <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+                  <aside className="space-y-5 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
+                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Publishing</h2>
+                      <div className="mt-4 space-y-4">
+                        <div>
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Featured image <span className="font-medium text-slate-400">· max 5 MB</span></span>
+                          {imagePreview ? (
+                            <div className="relative overflow-hidden rounded-xl border border-slate-200">
+                              <img src={imagePreview} alt="Featured image preview" className="max-h-48 w-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => { setImage(null); setExistingCoverImage(''); }}
+                                aria-label="Remove featured image"
+                                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/80 text-white transition hover:bg-rose-600"
+                              ><X size={15} /></button>
+                            </div>
+                          ) : (
+                            <label className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-center transition hover:border-blue-400 hover:bg-blue-50/50">
+                              <ImagePlus size={20} className="text-blue-600" />
+                              <span className="mt-2 text-xs font-bold text-slate-700">Choose featured image</span>
+                              <span className="mt-1 text-[10px] text-slate-500">JPG, PNG, WebP, or GIF</span>
+                              <input type="file" accept={IMAGE_TYPES.join(',')} onChange={handleImageChange} className="sr-only" />
+                            </label>
+                          )}
+                        </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-blue-700 px-5 text-sm font-bold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {submitting
-                ? <><Upload size={16} className="animate-pulse" /> Saving…</>
-                : <><CheckCircle2 size={16} /> {editingPostId ? 'Save changes' : 'Publish post'}</>}
-            </button>
-            <button type="button" onClick={() => { resetDraft(); setDashboardView('posts'); }} className="h-12 rounded-2xl border border-slate-200 px-5 text-sm font-bold text-slate-600 hover:bg-slate-50">Cancel</button>
-            </div>
-            <p className="text-center text-[11px] leading-5 text-slate-400">Your sign-in is checked by Supabase; only users listed as blog admins can publish.</p>
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Post title</span>
+                          <input
+                            type="text"
+                            minLength={3}
+                            maxLength={120}
+                            required
+                            value={title}
+                            onChange={(event) => {
+                              const nextTitle = event.target.value;
+                              setTitle(nextTitle);
+                              if (!slugTouched) setSlug(slugify(nextTitle));
+                            }}
+                            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                            placeholder="A clear, memorable headline"
+                          />
+                        </label>
+
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Post URL slug</span>
+                          <span className="mb-2 block break-all text-[10px] leading-4 text-slate-500">https://taranveer.in/blog/{slug || 'your-post-slug'}</span>
+                          <input
+                            type="text"
+                            maxLength={120}
+                            pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                            required
+                            value={slug}
+                            onChange={(event) => {
+                              setSlugTouched(true);
+                              setSlug(slugify(event.target.value));
+                            }}
+                            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 font-mono text-xs outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                            placeholder="my-post-slug"
+                          />
+                        </label>
+
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Publish date</span>
+                          <input
+                            type="datetime-local"
+                            required
+                            value={publishDate}
+                            onChange={(event) => setPublishDate(event.target.value)}
+                            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                          />
+                        </label>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <label className="block min-w-0">
+                            <span className="mb-2 block text-xs font-bold text-slate-700">Category</span>
+                            <input
+                              type="text"
+                              maxLength={32}
+                              required
+                              value={category}
+                              onChange={(event) => setCategory(event.target.value)}
+                              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                              placeholder="Development"
+                            />
+                          </label>
+                          <label className="block min-w-0">
+                            <span className="mb-2 block text-xs font-bold text-slate-700">Author</span>
+                            <input
+                              type="text"
+                              maxLength={80}
+                              required
+                              value={author}
+                              onChange={(event) => setAuthor(event.target.value)}
+                              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                              placeholder="Author name"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Search appearance</h2>
+                      <div className="mt-4 space-y-4">
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">SEO title</span>
+                          <input
+                            type="text"
+                            maxLength={120}
+                            value={seoTitle}
+                            onChange={(event) => setSeoTitle(event.target.value)}
+                            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                            placeholder={title || 'Uses post title by default'}
+                          />
+                          <span className="mt-1 block text-right text-[10px] text-slate-400">{seoTitle.length}/120</span>
+                        </label>
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Meta description</span>
+                          <textarea
+                            maxLength={280}
+                            rows={3}
+                            value={seoDescription}
+                            onChange={(event) => setSeoDescription(event.target.value)}
+                            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-5 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                            placeholder={excerpt || 'Uses post introduction by default'}
+                          />
+                          <span className="mt-1 block text-right text-[10px] text-slate-400">{seoDescription.length}/280</span>
+                        </label>
+                        <label className="block">
+                          <span className="mb-2 block text-xs font-bold text-slate-700">Keywords</span>
+                          <textarea
+                            maxLength={500}
+                            rows={2}
+                            value={seoKeywords}
+                            onChange={(event) => setSeoKeywords(event.target.value)}
+                            className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs leading-5 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                            placeholder="Add keywords separated by commas"
+                          />
+                        </label>
+                      </div>
+                    </section>
+
+                    <div className="space-y-3">
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 text-sm font-bold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {submitting
+                          ? <><Upload size={16} className="animate-pulse" /> Saving…</>
+                          : <><CheckCircle2 size={16} /> {editingPostId ? 'Save changes' : 'Publish post'}</>}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { resetDraft(); setDashboardView('posts'); }}
+                        className="h-11 w-full rounded-xl border border-slate-200 px-5 text-sm font-bold text-slate-600 hover:bg-slate-50"
+                      >Cancel</button>
+                      <p className="text-center text-[10px] leading-4 text-slate-400">Only authorized blog admins can publish.</p>
+                    </div>
+                  </aside>
+                </div>
           </form>
               )}
             </>
