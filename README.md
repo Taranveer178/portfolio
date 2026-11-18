@@ -13,6 +13,7 @@ Build for production:
 The public blog is available at `/blog`; individual posts use `/blog/:slug`, and the admin dashboard is at `/add-blog`.
 Blog posts use Supabase Postgres, Supabase Auth, and the `blog-covers` Storage bucket. RLS policies make posts public to read while restricting publishing, editing, deletion, and comment moderation to an explicitly authorized admin user.
 The editor supports rich text formatting, images between text blocks, and embedded YouTube/Vimeo videos. HTML source mode accepts sanitized markup and HTTPS iframe embeds, which are sandboxed when displayed. Scripts and unsafe markup are removed before content is saved or displayed. Switching modes preserves both drafts, and only the selected mode is published. Readers can submit comments; comments remain hidden until an admin approves them from `/add-blog`. Article pages include a sticky details panel and social sharing links.
+The sitemap includes the homepage, blog index, and all published post URLs. `npm run build` fetches the current public post slugs from Supabase and regenerates both `public/sitemap.xml` and `dist/sitemap.xml`, so new posts and edited slugs are included in the next production build and deployment. The sitemap is a static file in this Vite deployment; publishing a post or changing its slug does not change the live sitemap until the site is rebuilt and redeployed.
 
 ### Configure Supabase
 

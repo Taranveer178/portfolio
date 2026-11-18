@@ -194,16 +194,13 @@ function getBlogErrorMessage(error, fallback) {
   return error?.message || fallback;
 }
 
-const createSlug = (title) => {
-  const base = title
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 70) || 'post';
-  return `${base}-${crypto.randomUUID().slice(0, 8)}`;
-};
+const slugify = (value) => value
+  .toLowerCase()
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '')
+  .slice(0, 120);
 
 const formatDate = (date) => new Intl.DateTimeFormat('en-IN', {
   day: 'numeric',
@@ -790,6 +787,8 @@ function AddBlog() {
   const [authLoading, setAuthLoading] = useState(true);
   const [signingIn, setSigningIn] = useState(false);
   const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [slugTouched, setSlugTouched] = useState(false);
   const [excerpt, setExcerpt] = useState('');
   const [category, setCategory] = useState('Development');
   const [author, setAuthor] = useState('Taranveer Singh');
@@ -991,6 +990,8 @@ function AddBlog() {
 
   const resetDraft = () => {
     setTitle('');
+    setSlug('');
+    setSlugTouched(false);
     setExcerpt('');
     setCategory('Development');
     setAuthor('Taranveer Singh');
@@ -1016,6 +1017,8 @@ function AddBlog() {
     }
     post = toPost(data);
     setTitle(post.title);
+    setSlug(post.slug);
+    setSlugTouched(true);
     setExcerpt(post.excerpt);
     setCategory(post.category);
     setAuthor(post.author);
@@ -1091,6 +1094,9 @@ function AddBlog() {
     const uploadedPaths = [];
     try {
       if (!supabase || !session) throw new Error('Sign in with an authorized admin account before publishing.');
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug.trim())) {
+        throw new Error('Use a URL slug containing lowercase letters, numbers, and single hyphens.');
+      }
       let serializedContent;
 
       if (editorMode === 'html') {
@@ -1145,6 +1151,7 @@ function AddBlog() {
 
       const postValues = {
         title: title.trim(),
+        slug: slug.trim(),
         excerpt: excerpt.trim(),
         category: category.trim(),
         author: author.trim(),
@@ -1160,7 +1167,7 @@ function AddBlog() {
       } else {
         const { error: insertError } = await supabase
           .from('blog_posts')
-          .insert({ ...postValues, slug: createSlug(title.trim()) });
+          .insert(postValues);
         if (insertError) throw insertError;
       }
 
@@ -1169,15 +1176,18 @@ function AddBlog() {
       setDashboardView('posts');
       await refreshDashboard();
     } catch (requestError) {
+      const errorMessage = requestError.code === '23505' && /slug/i.test(requestError.message || '')
+        ? 'That URL slug is already in use. Choose a different slug.'
+        : requestError.message || 'Could not publish the article.';
       if (uploadedPaths.length && supabase) {
         const { error: cleanupError } = await supabase.storage.from(STORAGE_BUCKET).remove(uploadedPaths);
         if (cleanupError) {
-          setError(`${requestError.message || 'Could not publish the article.'} Media cleanup failed: ${cleanupError.message}`);
+          setError(`${errorMessage} Media cleanup failed: ${cleanupError.message}`);
         } else {
-          setError(requestError.message || 'Could not publish the article.');
+          setError(errorMessage);
         }
       } else {
-        setError(requestError.message || 'Could not publish the article.');
+        setError(errorMessage);
       }
     } finally {
       setSubmitting(false);
@@ -1343,9 +1353,31 @@ function AddBlog() {
                 maxLength={120}
                 required
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={(event) => {
+                  const nextTitle = event.target.value;
+                  setTitle(nextTitle);
+                  if (!slugTouched) setSlug(slugify(nextTitle));
+                }}
                 className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
                 placeholder="A clear, memorable headline"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block text-xs font-bold text-slate-700">Post URL slug</span>
+              <span className="mb-2 block text-[11px] text-slate-500">https://taranveer.in/blog/{slug || 'your-post-slug'}</span>
+              <input
+                type="text"
+                maxLength={120}
+                pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                required
+                value={slug}
+                onChange={(event) => {
+                  setSlugTouched(true);
+                  setSlug(slugify(event.target.value));
+                }}
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 font-mono text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                placeholder="my-post-slug"
               />
             </label>
 
