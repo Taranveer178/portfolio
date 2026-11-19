@@ -440,28 +440,24 @@ function BlogIndex() {
             </div>
           )}
           {!loading && !error && posts.length > 0 && (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post, index) => (
+            <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post) => (
                 <a
                   key={post.slug}
                   href={`/blog/${encodeURIComponent(post.slug)}`}
-                  className={`group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5 ${index === 0 ? 'md:col-span-2 md:grid md:grid-cols-2' : ''}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5"
                 >
                   {post.coverImage ? (
-                    <img src={post.coverImage} alt="" className="h-52 w-full bg-slate-100 object-cover md:h-full md:min-h-64" />
+                    <img src={post.coverImage} alt="" className="h-48 w-full bg-slate-100 object-cover" />
                   ) : (
-                    <div className="flex h-52 items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100 md:h-full md:min-h-64">
+                    <div className="flex h-48 items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100">
                       <BookOpen size={38} strokeWidth={1.2} className="text-blue-300 transition group-hover:scale-110" />
                     </div>
                   )}
-                  <div className="flex flex-col p-6 sm:p-7">
-                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700">
-                      <span>{post.category}</span><span className="h-1 w-1 rounded-full bg-slate-300" />
-                      <span className="inline-flex items-center gap-1.5 font-medium tracking-normal text-slate-500"><CalendarDays size={12} />{formatDate(post.createdAt)}</span>
-                    </div>
-                    <h3 className="font-serif mt-4 text-xl font-bold leading-snug text-slate-900 transition group-hover:text-blue-700 sm:text-2xl">{post.title}</h3>
+                  <div className="flex min-w-0 flex-1 flex-col p-5">
+                    <h3 className="font-serif line-clamp-2 text-xl font-bold leading-snug text-slate-900 transition group-hover:text-blue-700">{post.title}</h3>
                     <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">{post.excerpt}</p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-slate-900 group-hover:text-blue-700">
+                    <span className="mt-auto inline-flex items-center gap-2 pt-6 text-xs font-bold text-blue-700">
                       Read article <ArrowRight size={14} className="transition group-hover:translate-x-1" />
                     </span>
                   </div>
